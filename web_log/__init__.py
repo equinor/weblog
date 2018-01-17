@@ -1,0 +1,26 @@
+"""web_log is a lightweight thin logger that logs against a logger service.
+
+Currently it logs against st-vsib:4444, but this is runtime configurable by
+setting WEBLOG_URL to whichever logger you want to use.
+
+Usage:
+
+>>> from web_log import log
+>>> log('My app', 'launch')
+
+
+>>> from web_log import log
+>>> log('My app', 'launch', user='Jenkins', extra_info='caught exception', async=True)
+
+Can also be used in scripts or from terminal with
+/project/res/bin/wlog MyApp MyEvent Some extra information goes here
+
+"""
+
+from .web_log_functions import LogSync, LogAsync, log, WEBLOG_VERSION
+from .statoil_log_handler import StatoilLogHandler
+
+__version__ = WEBLOG_VERSION
+__author__ = 'Software Innovation Bergen, Statoil ASA'
+
+__all__ = ['LogSync', 'LogAsync', 'log', 'StatoilLogHandler']
