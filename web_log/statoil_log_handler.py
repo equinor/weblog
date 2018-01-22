@@ -2,7 +2,8 @@ import httplib
 import json
 import logging
 
-from .web_log_functions import fill_standard_event, _WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH, WEBLOG_TIMEOUT
+from constants import _WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH, WEBLOG_TIMEOUT
+from .web_log_functions import fill_standard_event
 
 
 class StatoilLogHandler(logging.Handler):

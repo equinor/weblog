@@ -4,13 +4,9 @@ from datetime import datetime as dt
 import getpass
 import json
 import requests
+from constants import _WEBLOG_PATH, _WEBLOG_PORT, _WEBLOG_SERVER, WEBLOG_TIMEOUT
 
-_WEBLOG_SERVER = "your-logging-server.com"  # TODO parameterize on setup.py?
-_WEBLOG_PORT = 4444
-_WEBLOG_PATH = ''
 WEBLOG_URL = "http://%s:%s%s" % (_WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH)
-
-WEBLOG_TIMEOUT = 3
 WEBLOG_VERSION = '0.3.1'
 
 
