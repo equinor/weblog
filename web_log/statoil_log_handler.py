@@ -30,15 +30,15 @@ class StatoilLogHandler(logging.Handler):
         Send the record to the Web server as json
         """
         try:
-            log_dict = {"loglevel": record.levelname,
-                        "pathname": record.pathname,
-                        "linenr": record.lineno,
-                        "log_name": record.name,
-                        }
-            log_dict.update(fill_standard_event(self.application,
-                                                record.getMessage(),
-                                                extra_info=extra_from_record(record),
-                                                user=self.user))
+            log_dict = {
+                "loglevel": record.levelname,
+                "pathname": record.pathname,
+                "linenr": record.lineno,
+                "log_name": record.name,
+            }
+            log_dict.update(
+                fill_standard_event(
+                    self.application, record.getMessage(), extra_info=extra_from_record(record), user=self.user))
             self.postLog(log_dict)
         except Exception:
             self.handleError(record)
@@ -55,8 +55,7 @@ class StatoilLogHandler(logging.Handler):
         if i >= 0:
             host = host[:i]
         h.putheader("Host", host)
-        h.putheader("Content-type",
-                    "application/json")
+        h.putheader("Content-type", "application/json")
         h.putheader("Content-length", str(len(data)))
         h.endheaders()
         h.send(data.encode('utf-8'))
@@ -91,12 +90,11 @@ BUILTIN_ATTRS = {
     'thread',
     'threadName',
 }
+
+
 def extra_from_record(record):
     """Returns `extra` dict you passed to logger.
     The `extra` keyword argument is used to populate the `__dict__` of
     the `LogRecord`.
     """
-    return {
-        attr_name: record.__dict__[attr_name]
-        for attr_name in record.__dict__
-        if attr_name not in BUILTIN_ATTRS}
+    return {attr_name: record.__dict__[attr_name] for attr_name in record.__dict__ if attr_name not in BUILTIN_ATTRS}

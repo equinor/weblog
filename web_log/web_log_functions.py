@@ -5,14 +5,13 @@ import getpass
 import json
 import requests
 
-_WEBLOG_SERVER  = "your-logging-server.com"  # TODO parameterize on setup.py?
-_WEBLOG_PORT    = 4444
-_WEBLOG_PATH    = ''
-WEBLOG_URL      = "http://%s:%s%s" % (_WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH)
+_WEBLOG_SERVER = "your-logging-server.com"  # TODO parameterize on setup.py?
+_WEBLOG_PORT = 4444
+_WEBLOG_PATH = ''
+WEBLOG_URL = "http://%s:%s%s" % (_WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH)
 
 WEBLOG_TIMEOUT = 3
 WEBLOG_VERSION = '0.3.1'
-
 
 
 def LogSync(application, event, user=None, extra_info=None, url=None):
@@ -33,7 +32,7 @@ def LogSync(application, event, user=None, extra_info=None, url=None):
         url = WEBLOG_URL
     log_dict = fill_standard_event(application, event, extra_info, user)
 
-    headers = {"content-type" : "application/json"}
+    headers = {"content-type": "application/json"}
     proxies = {"http": None, "https": None}
 
     # There seems to be some issues when there are multiple log
@@ -46,12 +45,7 @@ def LogSync(application, event, user=None, extra_info=None, url=None):
 
     try:
         data = json.dumps(log_dict)
-        response = requests.post(url,
-                                 data=data,
-                                 headers=headers,
-                                 verify=False,
-                                 timeout=WEBLOG_TIMEOUT,
-                                 proxies=proxies)
+        response = requests.post(url, data=data, headers=headers, verify=False, timeout=WEBLOG_TIMEOUT, proxies=proxies)
         return True
     except:
         return False
@@ -73,12 +67,13 @@ def fill_standard_event(application, event, extra_info=None, user=None):
             extra_dict = extra_info
         else:
             extra = str(extra_info)
-    log_dict = {"application": application,
-                "event": event,
-                "user": user,
-                "node_timestamp": dt.utcnow().isoformat(),
-                "logger": "%s %s" % (__file__, WEBLOG_VERSION)
-                }
+    log_dict = {
+        "application": application,
+        "event": event,
+        "user": user,
+        "node_timestamp": dt.utcnow().isoformat(),
+        "logger": "%s %s" % (__file__, WEBLOG_VERSION)
+    }
     log_dict.update(extra_dict)
     if extra:
         log_dict['extra_info'] = extra
