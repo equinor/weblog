@@ -19,6 +19,7 @@ Can also be used in scripts or from terminal with
 
 from .web_log_functions import LogSync, LogAsync, log, WEBLOG_VERSION
 from .statoil_log_handler import StatoilLogHandler
+from .wlog import wlog
 
 __version__ = WEBLOG_VERSION
 __author__ = 'Software Innovation Bergen, Statoil ASA'
