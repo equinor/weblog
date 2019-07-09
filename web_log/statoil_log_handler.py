@@ -1,8 +1,12 @@
-import httplib
+try:
+    import httplib
+except ModuleNotFoundError:
+    import http.client as httplib  # TODO use requests
+
 import json
 import logging
 
-from constants import _WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH, WEBLOG_TIMEOUT
+from .constants import WEBLOG_SERVER, WEBLOG_PORT, WEBLOG_PATH, WEBLOG_TIMEOUT
 from .web_log_functions import fill_standard_event
 
 
@@ -19,10 +23,10 @@ class StatoilLogHandler(logging.Handler):
         self.user = user
         self.host = host
         if host is None:
-            self.host = _WEBLOG_SERVER + ":" + str(_WEBLOG_PORT)
+            self.host = "{}:{}".format(WEBLOG_SERVER, WEBLOG_PORT)
         self.path = path
         if self.path is None:
-            self.path = _WEBLOG_PATH
+            self.path = WEBLOG_PATH
 
     def emit(self, record):
         """

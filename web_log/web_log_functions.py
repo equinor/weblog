@@ -1,13 +1,17 @@
-import thread
+try:
+    import thread
+except ModuleNotFoundError:
+    import _thread as thread  # TODO use threading
+
 from datetime import datetime as dt
 
 import getpass
 import json
 import requests
-from constants import _WEBLOG_PATH, _WEBLOG_PORT, _WEBLOG_SERVER, WEBLOG_TIMEOUT
+from .constants import WEBLOG_PATH, WEBLOG_PORT, WEBLOG_SERVER, WEBLOG_TIMEOUT
 
-WEBLOG_URL = "http://%s:%s%s" % (_WEBLOG_SERVER, _WEBLOG_PORT, _WEBLOG_PATH)
-WEBLOG_VERSION = '0.3.1'
+WEBLOG_URL = "http://{}:{}{}".format(WEBLOG_SERVER, WEBLOG_PORT, WEBLOG_PATH)
+WEBLOG_VERSION = '1.1.0'
 
 
 def LogSync(application, event, user=None, extra_info=None, url=None):
@@ -81,13 +85,13 @@ def LogAsync(application, event, user=None, extra_info=None, url=None):
     thread.start_new_thread(LogSync, (application, event, user, extra_info, url))
 
 
-def log(application, event, user=None, extra_info=None, async=False, url=None):
+def log(application, event, user=None, extra_info=None, url=None, async_=False, **kwargs):
     """Shorthand for either LogSync or LogAsync.  Will log asynchronously if
     async=True, that is, it will start a new thread for performing requests.
     Otherwise it blocks until the logging request is performed.
     """
 
-    if async:
+    if async_ or 'async' in kwargs and kwargs['async']:
         LogAsync(application, event, user=user, extra_info=extra_info, url=url)
     else:
         LogSync(application, event, user=user, extra_info=extra_info, url=url)
