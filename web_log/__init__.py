@@ -22,6 +22,6 @@ from .statoil_log_handler import StatoilLogHandler
 from .wlog import wlog
 
 __version__ = WEBLOG_VERSION
-__author__ = 'Software Innovation Bergen, Statoil ASA'
+__author__ = "Software Innovation, Equinor ASA"
 
-__all__ = ['LogSync', 'LogAsync', 'log', 'StatoilLogHandler']
+__all__ = ["LogSync", "LogAsync", "log", "StatoilLogHandler"]

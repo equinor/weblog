@@ -43,7 +43,12 @@ class StatoilLogHandler(logging.Handler):
             }
             log_dict.update(
                 fill_standard_event(
-                    self.application, record.getMessage(), extra_info=extra_from_record(record), user=self.user))
+                    self.application,
+                    record.getMessage(),
+                    extra_info=extra_from_record(record),
+                    user=self.user,
+                )
+            )
             self.postLog(log_dict)
         except Exception:
             self.handleError(record)
@@ -63,7 +68,7 @@ class StatoilLogHandler(logging.Handler):
         h.putheader("Content-type", "application/json")
         h.putheader("Content-length", str(len(data)))
         h.endheaders()
-        h.send(data.encode('utf-8'))
+        h.send(data.encode("utf-8"))
         h.getresponse()  # can't do anything with the result
 
 
@@ -72,28 +77,28 @@ class StatoilLogHandler(logging.Handler):
 # Used by the function extra_from_record, these are keywords which it will ignore when extracting the dictionary
 # with extra information.
 BUILTIN_ATTRS = {
-    'args',
-    'asctime',
-    'created',
-    'exc_info',
-    'exc_text',
-    'filename',
-    'funcName',
-    'levelname',
-    'levelno',
-    'lineno',
-    'module',
-    'msecs',
-    'message',
-    'msg',
-    'name',
-    'pathname',
-    'process',
-    'processName',
-    'relativeCreated',
-    'stack_info',
-    'thread',
-    'threadName',
+    "args",
+    "asctime",
+    "created",
+    "exc_info",
+    "exc_text",
+    "filename",
+    "funcName",
+    "levelname",
+    "levelno",
+    "lineno",
+    "module",
+    "msecs",
+    "message",
+    "msg",
+    "name",
+    "pathname",
+    "process",
+    "processName",
+    "relativeCreated",
+    "stack_info",
+    "thread",
+    "threadName",
 }
 
 
@@ -102,4 +107,8 @@ def extra_from_record(record):
     The `extra` keyword argument is used to populate the `__dict__` of
     the `LogRecord`.
     """
-    return {attr_name: record.__dict__[attr_name] for attr_name in record.__dict__ if attr_name not in BUILTIN_ATTRS}
+    return {
+        attr_name: record.__dict__[attr_name]
+        for attr_name in record.__dict__
+        if attr_name not in BUILTIN_ATTRS
+    }

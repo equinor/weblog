@@ -11,7 +11,7 @@ import requests
 from .constants import WEBLOG_PATH, WEBLOG_PORT, WEBLOG_SERVER, WEBLOG_TIMEOUT
 
 WEBLOG_URL = "http://{}:{}{}".format(WEBLOG_SERVER, WEBLOG_PORT, WEBLOG_PATH)
-WEBLOG_VERSION = '1.1.0'
+WEBLOG_VERSION = "1.1.0"
 
 
 def LogSync(application, event, user=None, extra_info=None, url=None):
@@ -39,13 +39,21 @@ def LogSync(application, event, user=None, extra_info=None, url=None):
     # requests from the same executable, we just look another way.
     try:
         from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     except ImportError:
         pass
 
     try:
         data = json.dumps(log_dict)
-        response = requests.post(url, data=data, headers=headers, verify=False, timeout=WEBLOG_TIMEOUT, proxies=proxies)
+        response = requests.post(
+            url,
+            data=data,
+            headers=headers,
+            verify=False,
+            timeout=WEBLOG_TIMEOUT,
+            proxies=proxies,
+        )
         return True
     except:
         return False
@@ -59,7 +67,7 @@ def fill_standard_event(application, event, extra_info=None, user=None):
     if user is None:
         user = getpass.getuser()
     extra_dict = {}
-    extra = ''
+    extra = ""
     if extra_info:
         if isinstance(extra_info, basestring):
             extra = extra_info
@@ -72,11 +80,11 @@ def fill_standard_event(application, event, extra_info=None, user=None):
         "event": event,
         "user": user,
         "node_timestamp": dt.utcnow().isoformat(),
-        "logger": "%s %s" % (__file__, WEBLOG_VERSION)
+        "logger": "%s %s" % (__file__, WEBLOG_VERSION),
     }
     log_dict.update(extra_dict)
     if extra:
-        log_dict['extra_info'] = extra
+        log_dict["extra_info"] = extra
     return log_dict
 
 
@@ -85,13 +93,15 @@ def LogAsync(application, event, user=None, extra_info=None, url=None):
     thread.start_new_thread(LogSync, (application, event, user, extra_info, url))
 
 
-def log(application, event, user=None, extra_info=None, url=None, async_=False, **kwargs):
+def log(
+    application, event, user=None, extra_info=None, url=None, async_=False, **kwargs
+):
     """Shorthand for either LogSync or LogAsync.  Will log asynchronously if
     async=True, that is, it will start a new thread for performing requests.
     Otherwise it blocks until the logging request is performed.
     """
 
-    if async_ or 'async' in kwargs and kwargs['async']:
+    if async_ or "async" in kwargs and kwargs["async"]:
         LogAsync(application, event, user=user, extra_info=extra_info, url=url)
     else:
         LogSync(application, event, user=user, extra_info=extra_info, url=url)
