@@ -8,9 +8,9 @@ from datetime import datetime as dt
 import getpass
 import json
 import requests
-from .constants import WEBLOG_PATH, WEBLOG_PORT, WEBLOG_SERVER, WEBLOG_TIMEOUT
+import web_log
 
-WEBLOG_URL = "http://{}:{}{}".format(WEBLOG_SERVER, WEBLOG_PORT, WEBLOG_PATH)
+
 WEBLOG_VERSION = "1.1.0"
 
 
@@ -29,7 +29,11 @@ def LogSync(application, event, user=None, extra_info=None, url=None):
 
     """
     if url is None:
-        url = WEBLOG_URL
+        url = "http://%s:%s%s" % (
+            web_log.constants.WEBLOG_SERVER,
+            web_log.constants.WEBLOG_PORT,
+            web_log.constants.WEBLOG_PATH,
+        )
     log_dict = fill_standard_event(application, event, extra_info, user)
 
     headers = {"content-type": "application/json"}
@@ -51,11 +55,12 @@ def LogSync(application, event, user=None, extra_info=None, url=None):
             data=data,
             headers=headers,
             verify=False,
-            timeout=WEBLOG_TIMEOUT,
+            timeout=web_log.constants.WEBLOG_TIMEOUT,
             proxies=proxies,
         )
         return True
-    except:
+    except Exception as err:
+        print(err)
         return False
 
 
@@ -69,7 +74,7 @@ def fill_standard_event(application, event, extra_info=None, user=None):
     extra_dict = {}
     extra = ""
     if extra_info:
-        if isinstance(extra_info, basestring):
+        if isinstance(extra_info, str):
             extra = extra_info
         elif isinstance(extra_info, dict):
             extra_dict = extra_info
