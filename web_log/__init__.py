@@ -25,10 +25,11 @@ Can also be used in scripts or from terminal with
 
 from .web_log_functions import LogSync, LogAsync, log, WEBLOG_VERSION
 from .constants import *
-from .log_handler import StatoilLogHandler
+from .log_handler import LogHandler
+from .log_handler import LogHandler as StatoilLogHandler
 from .wlog import wlog
 
 __version__ = WEBLOG_VERSION
 __author__ = "Software Innovation, Equinor ASA"
 
-__all__ = ["LogSync", "LogAsync", "log", "StatoilLogHandler"]
+__all__ = ["LogSync", "LogAsync", "log", "LogHandler", "StatoilLogHandler"]

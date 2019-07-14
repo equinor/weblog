@@ -10,7 +10,7 @@ from .web_log_functions import fill_standard_event
 import web_log
 
 
-class StatoilLogHandler(logging.Handler):
+class LogHandler(logging.Handler):
     def __init__(self, application, user=None, host=None, path=None):
         """
         Initialize the instance with the application name and optionally the user (if not

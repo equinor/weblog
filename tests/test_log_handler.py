@@ -1,18 +1,47 @@
 import json
 import logging
+import contextlib
+
 import mock
 
+from web_log import LogHandler
 from web_log import StatoilLogHandler
 
 
-def test_log_handler():
-    with mock.serve():
-        logger = logging.getLogger("test")
-        logger.addHandler(StatoilLogHandler("TestHandler"))
-        logger.info("Is ignored")
-        logger.warning("A warning")
+@contextlib.contextmanager
+def handler(logger_, handler_):
+    logger = logging.getLogger(logger_)
+    logger.addHandler(handler_)
+    yield logger
+    logger.removeHandler(handler_)
 
-    print(mock.OUTPUT)
+
+def test_statoil_log_handler():
+    statlog = StatoilLogHandler("StatoilHandler")
+    with handler("test", statlog) as logger:
+        with mock.serve():
+            logger.warning("Statoil")
+
+    assert len(mock.OUTPUT) >= 1  # might be other warnings
+    found_warning = False  # find "A warning"
+    for log in mock.OUTPUT:
+        msg = log.decode("UTF-8")
+        data = json.loads(msg)
+        if data.get("event") == "Statoil":
+            assert data.get("application") == "StatoilHandler"
+            assert "extra_info" not in data
+            assert data["loglevel"] == "WARNING"
+            found_warning = True
+    assert found_warning
+
+
+def test_log_handler():
+    loghandler = LogHandler("TestHandler")
+    with handler("test", loghandler) as logger:
+        with mock.serve():
+            logger.info("Is ignored")
+            logger.warning("A warning")
+
     assert len(mock.OUTPUT) >= 1  # might be other warnings
     found_warning = False  # find "A warning"
     for log in mock.OUTPUT:
@@ -27,12 +56,12 @@ def test_log_handler():
 
 
 def test_log_handler_info():
-    with mock.serve():
-        logger = logging.getLogger("test")
-        logger.addHandler(StatoilLogHandler("TestHandler2"))
-        logger.setLevel(logging.INFO)
-        logger.info("Is not ignored")
-        logger.warning("A warning")
+    loghandler = LogHandler("TestHandler2")
+    with handler("test", loghandler) as logger:
+        with mock.serve():
+            logger.setLevel(logging.INFO)
+            logger.info("Is not ignored")
+            logger.warning("A warning")
 
     loglevels = {"Is not ignored": "INFO", "A warning": "WARNING"}
 
