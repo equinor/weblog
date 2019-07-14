@@ -5,16 +5,32 @@
 
 import web_log
 
+_USAGE = """weblog version {}
+
+Usage: wlog application event [extra]\n
+       wlog -v (--version)
+       wlog -h (--help)
+""".format(
+    web_log.WEBLOG_VERSION
+)
+
+
+def _exit_with_msg(msg, exitcode=0):
+    print(msg)
+    exit(exitcode)
+
 
 def wlog():
     import sys
 
     args = sys.argv
-    if len(args) > 1 and args[1] == "-v":
-        print("wlog %s" % web_log.WEBLOG_VERSION)
-        exit(0)
+    if len(args) == 2 and args[1] in ("-v", "--version"):
+        _exit_with_msg("wlog {}".format(web_log.WEBLOG_VERSION))
+    if len(args) == 2 and args[1] in ("-h", "--help"):
+        _exit_with_msg(_USAGE)
     if len(args) < 3:
-        exit("Usage: wlog application event [extra]\n       wlog -v")
+        _exit_with_msg(_USAGE, exitcode=1)
+
     extra = ""
     application = args[1]
     event = args[2]

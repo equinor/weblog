@@ -6,8 +6,8 @@ except ModuleNotFoundError:
 import json
 import logging
 
-from .constants import WEBLOG_SERVER, WEBLOG_PORT, WEBLOG_PATH, WEBLOG_TIMEOUT
 from .web_log_functions import fill_standard_event
+import web_log
 
 
 class StatoilLogHandler(logging.Handler):
@@ -23,10 +23,12 @@ class StatoilLogHandler(logging.Handler):
         self.user = user
         self.host = host
         if host is None:
-            self.host = "{}:{}".format(WEBLOG_SERVER, WEBLOG_PORT)
+            self.host = "{}:{}".format(
+                web_log.constants.WEBLOG_SERVER, web_log.constants.WEBLOG_PORT
+            )
         self.path = path
         if self.path is None:
-            self.path = WEBLOG_PATH
+            self.path = web_log.constants.WEBLOG_PATH
 
     def emit(self, record):
         """
@@ -55,7 +57,7 @@ class StatoilLogHandler(logging.Handler):
 
     def postLog(self, log_dict):
         host = self.host
-        h = httplib.HTTPConnection(host, timeout=WEBLOG_TIMEOUT)
+        h = httplib.HTTPConnection(host, timeout=web_log.constants.WEBLOG_TIMEOUT)
         url = self.path
         data = json.dumps(log_dict)
         h.putrequest("POST", url)
